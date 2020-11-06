@@ -169,7 +169,7 @@ int main(void) {
             SetOperatingFrequency(ctrl_reg1, LIS3DH_100_HZ_CTRL_REG1);
             break;        
         case F:
-            count_push = 0;
+            count_push = 0; // To be ready to restart the cycle
             // Set frequency
             SetOperatingFrequency(ctrl_reg1, LIS3DH_200_HZ_CTRL_REG1);
             break;

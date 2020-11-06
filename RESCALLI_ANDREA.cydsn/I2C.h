@@ -13,7 +13,20 @@
 #ifndef __I2C_H_
     #define __I2C_H_
     
+    // Includes
     #include "cytypes.h"
+    
+    // Defines
+    #define DEVICE_CONNECTED    1
+    #define DEVICE_UNCONNECTED  0
+    
+    
+    /*
+     * Declaration of function that searches for connected devices on the I2C bus.
+     * As only parameter it requires a device adress (will be incremental for a scan operation)
+     *
+    */
+    uint8_t I2C_Peripheral_IsDeviceConnected(uint8_t device_address);
     
     
     /*

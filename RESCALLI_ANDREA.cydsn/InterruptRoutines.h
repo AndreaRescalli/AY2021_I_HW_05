@@ -16,7 +16,7 @@
     #include "cytypes.h"
     
     // Globals
-    volatile uint8 flag_push;
+    volatile uint8_t flag_push;
     
     // Declaration of ISR that informs whether the button has been pressed
     // in order to update the sampling frequency for the accelerometer

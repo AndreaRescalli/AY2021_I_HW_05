@@ -15,6 +15,26 @@
 #include "I2C_Master.h"
 
 
+/*
+ * Definition of function that searches for connected devices on the I2C bus.
+ * As only parameter it requires a device adress (will be incremental for a scan operation)
+ *
+*/
+uint8_t I2C_Peripheral_IsDeviceConnected(uint8_t device_address) {
+
+    // Send a start condition followed by a stop condition
+    uint8_t temp = I2C_Master_MasterSendStart(device_address, I2C_Master_WRITE_XFER_MODE);
+    I2C_Master_MasterSendStop();
+    
+    // If no error is generated, a device is connected
+    if (temp == I2C_Master_MSTR_NO_ERROR) {
+        return DEVICE_CONNECTED;
+    }
+    
+    return DEVICE_UNCONNECTED;
+    
+} // end I2C_Peripheral_IsDeviceConnected
+
 
 /*
  * Definition of function that reads one byte from a device's register 

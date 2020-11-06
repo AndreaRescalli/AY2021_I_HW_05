@@ -10,10 +10,12 @@
  * ========================================
 */
 
+
 // Includes
 #include "project.h"
 #include "InterruptRoutines.h"
 #include <stdio.h>
+
 
 // Defines
 # define STARTUP_REG 0x0000
@@ -24,6 +26,29 @@
 #define D   50
 #define E   100
 #define F   200
+
+// Accelerometer macros
+#define LIS3DH_DEVICE_ADDRESS       0x18  // Adress of slave device (accelerometer)
+#define LIS3DH_WHO_AM_I_REG         0x0F  // WHO AM I register adress
+#define LIS3DH_CTRL_REG1            0x20  // Control register 1 adress
+#define LIS3DH_CTRL_REG4            0x23  // Control register 4 adress
+#define LIS3DH_STATUS_REG           0x27  // Status register adress
+#define LIS3DH_OUT_X_L              0x28  // X-axis output LSB register adress
+#define LIS3DH_OUT_X_H              0x29  // X-axis output MSB register adress
+#define LIS3DH_OUT_Y_L              0x2A  // Y-axis output LSB register adress
+#define LIS3DH_OUT_Y_H              0x2B  // Y-axis output MSB register adress
+#define LIS3DH_OUT_Z_L              0x2C  // Z-axis output LSB register adress
+#define LIS3DH_OUT_Z_H              0x2D  // Z-axis output MSB register adress
+
+#define LIS3DH_HR_MODE_CTRL_REG4    0x08  // Set operating mode to high resolution
+
+#define LIS3DH_1_HZ_CTRL_REG1       0x17  // Set sampling frequency to 1 Hz
+#define LIS3DH_10_HZ_CTRL_REG1      0x27  // Set sampling frequency to 10 Hz
+#define LIS3DH_25_HZ_CTRL_REG1      0x37  // Set sampling frequency to 25 Hz
+#define LIS3DH_50_HZ_CTRL_REG1      0x47  // Set sampling frequency to 50 Hz
+#define LIS3DH_100_HZ_CTRL_REG1     0x57  // Set sampling frequency to 100 Hz
+#define LIS3DH_200_HZ_CTRL_REG1     0x67  // Set sampling frequency to 200 Hz
+
 
 // Globals
 static uint8 count_push         = 0; // Flag that informs whether the button has been pressed
@@ -39,9 +64,14 @@ int main(void) {
 
     CyGlobalIntEnable; /* Enable global interrupts. */
     
-    // Start components (EEPROM, UART)
+    // Start components (EEPROM, UART, I2C)
     EEPROM_Start();
     UART_Start();
+    I2C_Master_Start();
+    
+    // The LIS3DH datasheet states that the boot procedure of the device is completed
+    // 5ms after the power-up of the device
+    CyDelay(5);
     
     // Start ISRs
     ISR_Push_StartEx(Custom_ISR_Push);    

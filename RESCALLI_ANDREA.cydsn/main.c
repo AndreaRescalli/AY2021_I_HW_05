@@ -300,13 +300,13 @@ int main(void) {
             
             /* ---------------------------------- */
             // X values
-            OutAcc = (int16)((AccelerationData[0] | (AccelerationData[1]<<8)))>>4;
+            OutAcc = (int16_t)((AccelerationData[0] | (AccelerationData[1]<<8)))>>4;
             
             // Conversion into m/s^2
             conv = (float) (OutAcc/1000.0*9.81);
             PrintFloat(conv);
             
-            OutAcc = (int16) conv*1000;
+            OutAcc = (int16_t) (conv*1000);
             sprintf(msg, "X_acc : %d\r\n", OutAcc);
             UART_PutString(msg);            
             
@@ -316,13 +316,13 @@ int main(void) {
             
             /* ----------------------------------- */
             // Y values
-            OutAcc = (int16)((AccelerationData[2] | (AccelerationData[3]<<8)))>>4;
+            OutAcc = (int16_t)((AccelerationData[2] | (AccelerationData[3]<<8)))>>4;
             
             // Conversion into m/s^2
             conv = (float) (OutAcc/1000.0*9.81);
             PrintFloat(conv);
 
-            OutAcc = (int16) conv*1000;
+            OutAcc = (int16_t) (conv*1000);
             sprintf(msg, "Y_acc : %d\r\n", OutAcc);
             UART_PutString(msg);
             
@@ -332,13 +332,13 @@ int main(void) {
             
             /* ----------------------------------- */
             // Z values
-            OutAcc = (int16)((AccelerationData[4] | (AccelerationData[5]<<8)))>>4;
+            OutAcc = (int16_t)((AccelerationData[4] | (AccelerationData[5]<<8)))>>4;
             
             // Conversion into m/s^2
             conv = (float) (OutAcc/1000.0*9.81);
             PrintFloat(conv);
             
-            OutAcc = (int16) conv*1000;            
+            OutAcc = (int16_t) (conv*1000);            
             sprintf(msg, "Z_acc : %d\r\n", OutAcc);
             UART_PutString(msg);            
             

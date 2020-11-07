@@ -18,7 +18,6 @@
 /*
  * Definition of function that searches for connected devices on the I2C bus.
  * As only parameter it requires a device adress (will be incremental for a scan operation)
- *
 */
 uint8_t I2C_Peripheral_IsDeviceConnected(uint8_t device_address) {
 
@@ -42,7 +41,6 @@ uint8_t I2C_Peripheral_IsDeviceConnected(uint8_t device_address) {
  * - adress of the device
  * - adress of the register we want to read
  * - pointer where to save the read data
- *
 */
 void I2C_Peripheral_ReadRegister(uint8_t device_address, 
                                  uint8_t register_address,
@@ -82,7 +80,6 @@ void I2C_Peripheral_ReadRegister(uint8_t device_address,
  * - adress of the register we want to read
  * - # registers we want to read
  * - pointer where to save the read data
- *
 */                               
 void I2C_Peripheral_ReadRegisterMulti(uint8_t device_address,
                                       uint8_t register_address,
@@ -134,7 +131,6 @@ void I2C_Peripheral_ReadRegisterMulti(uint8_t device_address,
  * - adress of the device
  * - adress of the register we want to read
  * - data to be written
- *
 */
 void I2C_Peripheral_WriteRegister(uint8_t device_address,
                                   uint8_t register_address,

@@ -21,7 +21,8 @@
 // in order to update the sampling frequency for the accelerometer
 CY_ISR(Custom_ISR_Push) {
 
-    /* No need to clear any interrupt source:
+    /* 
+     * No need to clear any interrupt source:
      * interrupt component is configured for RISING_EDGE mode.
      * PLEASE NOTE THAT AN INTERRUPT IS GENERATED, ONCE, AT THE PUSH OF THE BUTTON
      * So, even if we keep the button pressed, the sequence will be incremented

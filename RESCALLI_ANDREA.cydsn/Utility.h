@@ -29,7 +29,7 @@
     #define LIS3DH_OUT_Z_L              0x2C  // Z-axis output LSB register adress
     #define LIS3DH_OUT_Z_H              0x2D  // Z-axis output MSB register adress
 
-    #define LIS3DH_HR_MODE_CTRL_REG4    0x08  // Set operating mode to high resolution
+    #define LIS3DH_HR_MODE_CTRL_REG4    0x88  // Set BDU and operating mode to HR
 
     #define LIS3DH_1_HZ_CTRL_REG1       0x17  // Set sampling frequency to 1 Hz
     #define LIS3DH_10_HZ_CTRL_REG1      0x27  // Set sampling frequency to 10 Hz
@@ -38,16 +38,20 @@
     #define LIS3DH_100_HZ_CTRL_REG1     0x57  // Set sampling frequency to 100 Hz
     #define LIS3DH_200_HZ_CTRL_REG1     0x67  // Set sampling frequency to 200 Hz
     
+    #define LIS3DH_ZYXDA_MASK           0x08  // Mask for X, Y and Z-axis new data available
+    
     
     /*
      * Declaration of function that sets the operating frequency of the LIS3DH.
      * As parameters it requires:
      * - current value of the Control Register 1 (where the frequency is set)
      * - desired value to be written in the register
-     *
     */
     void SetOperatingFrequency(uint8_t register_value, 
                                uint8_t desired_value);
+    
+    // Declaration of helping function to print float varaibles via UART
+    void PrintFloat(float value);
     
 #endif
 

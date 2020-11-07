@@ -304,11 +304,11 @@ int main(void) {
             
             // Conversion into m/s^2
             conv = (float) (OutAcc/1000.0*9.81);
-            PrintFloat(conv);
+//            PrintFloat(conv);
             
             OutAcc = (int16_t) (conv*1000);
-            sprintf(msg, "X_acc : %d\r\n", OutAcc);
-            UART_PutString(msg);            
+//            sprintf(msg, "X_acc : %d\r\n", OutAcc);
+//            UART_PutString(msg);            
             
             DataBuffer[1] = (uint8_t) (OutAcc & 0xFF);
             DataBuffer[2] = (uint8_t) (OutAcc>>8);
@@ -320,11 +320,11 @@ int main(void) {
             
             // Conversion into m/s^2
             conv = (float) (OutAcc/1000.0*9.81);
-            PrintFloat(conv);
+//            PrintFloat(conv);
 
             OutAcc = (int16_t) (conv*1000);
-            sprintf(msg, "Y_acc : %d\r\n", OutAcc);
-            UART_PutString(msg);
+//            sprintf(msg, "Y_acc : %d\r\n", OutAcc);
+//            UART_PutString(msg);
             
             DataBuffer[3] = (uint8_t) (OutAcc & 0xFF);
             DataBuffer[4] = (uint8_t) (OutAcc>>8);
@@ -336,16 +336,16 @@ int main(void) {
             
             // Conversion into m/s^2
             conv = (float) (OutAcc/1000.0*9.81);
-            PrintFloat(conv);
+//            PrintFloat(conv);
             
             OutAcc = (int16_t) (conv*1000);            
-            sprintf(msg, "Z_acc : %d\r\n", OutAcc);
-            UART_PutString(msg);            
+//            sprintf(msg, "Z_acc : %d\r\n", OutAcc);
+//            UART_PutString(msg);            
             
             DataBuffer[5] = (uint8_t) (OutAcc & 0xFF);
             DataBuffer[6] = (uint8_t) (OutAcc>>8);
             
-            //UART_PutArray(DataBuffer,TRANSMIT_BUFFER_SIZE);
+            UART_PutArray(DataBuffer,TRANSMIT_BUFFER_SIZE);
             
         } // end data transmission
                     

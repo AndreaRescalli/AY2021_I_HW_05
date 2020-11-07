@@ -34,22 +34,22 @@ void SetOperatingFrequency(uint8_t register_value,
     
     if (register_value != desired_value) {
         
-        UART_PutString("\r\nUpdating Sampling Frequency\r\n");
+//        UART_PutString("\r\nUpdating Sampling Frequency\r\n");
         // Set the frequency by writing on the register the correct value
         // This also ensures LPen bit is 0 (it's embedded in the desired_value)
         register_value = desired_value;
         I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
                                      LIS3DH_CTRL_REG1,
                                      register_value);
-        sprintf(message, "Desired value for CONTROL REGISTER 1: 0x%02X\r\n", register_value);
-        UART_PutString(message);
+//        sprintf(message, "Desired value for CONTROL REGISTER 1: 0x%02X\r\n", register_value);
+//        UART_PutString(message);
         
         // Check that the register has been overwritten correctly
         I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
                                     LIS3DH_CTRL_REG1,
                                     &register_value);
-        sprintf(message, "CONTROL REGISTER 1 after overwrite: 0x%02X\r\n", register_value);
-        UART_PutString(message);    
+//        sprintf(message, "CONTROL REGISTER 1 after overwrite: 0x%02X\r\n", register_value);
+//        UART_PutString(message);    
             
     } // end write
     

@@ -20,31 +20,34 @@
 
 
 // Defines
-#define STARTUP_REG     0x0000
-
+    // EEPROM register where the frequency for the LIS3DH is stored
+#define STARTUP_REG     0x0000  
+    // Possible operating frequencies for the LIS3DH
 #define ONE_HZ          1
 #define TEN_HZ          10
 #define TWENTYFIVE_HZ   25
 #define FIFTY_HZ        50
 #define HUNDRED_HZ      100
 #define TWOHUNDRED_HZ   200
-
+    // Macros for the packet of data to be sent via UART
 #define HEADER               0xA0
 #define TAIL                 0xC0
 #define AXES                 3
 #define BYTE_TO_SEND         2*AXES
 #define TRANSMIT_BUFFER_SIZE 1+BYTE_TO_SEND+1
+    // Macros for the LIS3DH are found in the "Utility.h" header file
 
 
 // Useful variables
-static uint8_t count_push         = 0; // Flag that informs whether the button has been pressed
-static uint8_t sampling_frequency = 0; // Varaible that stores the sampling frequency at which the
-                                       // accelerometer operates [Hz]   
+uint8_t count_push         = 0; // Variable that tracks the cycling of frequencies
+uint8_t sampling_frequency = 0; // Varaible that stores the sampling frequency at 
+                                // which the LIS3DH operates [Hz]   
 
-static uint8_t DataBuffer[TRANSMIT_BUFFER_SIZE]; // Buffer with XYZ data to send
-static uint8_t AccelerationData[BYTE_TO_SEND];   // Temporary buffer
-int16_t OutAcc = 0;                              // Auxiliary variable
-float conv = 0.0;                                  // Auxiliary variable   
+uint8_t DataBuffer[TRANSMIT_BUFFER_SIZE] = {'\0'}; // Buffer with XYZ data to be sent
+uint8_t AccelerationData[BYTE_TO_SEND]   = {'\0'}; // Temporary buffer
+
+int16_t OutAcc = 0;    // Auxiliary variable
+float conv     = 0.0;  // Auxiliary variable   
 
                                     
 // TEST VARAIBLES
@@ -68,7 +71,7 @@ int main(void) {
     
     // The LIS3DH datasheet states that the boot procedure of the device is completed
     // 5ms after the power-up of the device
-    CyDelay(5);
+    CyDelay(10);
     
     // Init flags
     flag_push = 0;
@@ -83,11 +86,11 @@ int main(void) {
     // Check which devices are present on the I2C bus (just as intial control)
     for (int i = 0;i<128;i++) {
         
-        // Scan the whole I2C bus
+        // Scan the whole I2C bus --> search for LIS3DH
         if (I2C_Peripheral_IsDeviceConnected(i)) {
             
-            // Display address of conencted device in hex format
-            sprintf(msg, "Connected device: 0x%02X [Expected: 0x18]\r\n", i);
+            // Display address of connected device in hex format
+            sprintf(msg, "CONNECTED DEVICE: 0x%02X [Expected: 0x18]\r\n", i);
             UART_PutString(msg);
             
             // Read WHO AM I register of connected device
@@ -122,6 +125,7 @@ int main(void) {
         
     } // end scan check
     
+    
     /*
      * First of all, we have to set the LIS3DH to High Resolution operating mode
      * This will be done only if the device is not in HR mode yet
@@ -138,8 +142,6 @@ int main(void) {
         I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
                                      LIS3DH_CTRL_REG4,
                                      ctrl_reg4);
-        sprintf(msg, "Desired value for CONTROL REGISTER 4: 0x%02X\r\n", ctrl_reg4);
-        UART_PutString(msg);
         
         // Check that the register has been overwritten correctly
         I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
@@ -283,7 +285,7 @@ int main(void) {
                                     LIS3DH_STATUS_REG,
                                     &status_register);
         
-        // Acquire new data only if we have new data available
+        // Acquire data only if we have new data available
         if(status_register & LIS3DH_ZYXDA_MASK) {
             
             // Read all the data from X, Y and Z axes
@@ -303,12 +305,12 @@ int main(void) {
             OutAcc = (int16_t)((AccelerationData[0] | (AccelerationData[1]<<8)))>>4;
             
             // Conversion into m/s^2
-            conv = (float) (OutAcc/1000.0*9.81);
-//            PrintFloat(conv);
+            conv = OutAcc/1000.0*9.81;
+            PrintFloat(conv);
             
             OutAcc = (int16_t) (conv*1000);
-//            sprintf(msg, "X_acc : %d\r\n", OutAcc);
-//            UART_PutString(msg);            
+            sprintf(msg, "X_acc : %d\r\n", OutAcc);
+            UART_PutString(msg);            
             
             DataBuffer[1] = (uint8_t) (OutAcc & 0xFF);
             DataBuffer[2] = (uint8_t) (OutAcc>>8);
@@ -319,12 +321,12 @@ int main(void) {
             OutAcc = (int16_t)((AccelerationData[2] | (AccelerationData[3]<<8)))>>4;
             
             // Conversion into m/s^2
-            conv = (float) (OutAcc/1000.0*9.81);
-//            PrintFloat(conv);
+            conv = OutAcc/1000.0*9.81;
+            PrintFloat(conv);
 
             OutAcc = (int16_t) (conv*1000);
-//            sprintf(msg, "Y_acc : %d\r\n", OutAcc);
-//            UART_PutString(msg);
+            sprintf(msg, "Y_acc : %d\r\n", OutAcc);
+            UART_PutString(msg);
             
             DataBuffer[3] = (uint8_t) (OutAcc & 0xFF);
             DataBuffer[4] = (uint8_t) (OutAcc>>8);
@@ -335,17 +337,17 @@ int main(void) {
             OutAcc = (int16_t)((AccelerationData[4] | (AccelerationData[5]<<8)))>>4;
             
             // Conversion into m/s^2
-            conv = (float) (OutAcc/1000.0*9.81);
-//            PrintFloat(conv);
+            conv = OutAcc/1000.0*9.81;
+            PrintFloat(conv);
             
             OutAcc = (int16_t) (conv*1000);            
-//            sprintf(msg, "Z_acc : %d\r\n", OutAcc);
-//            UART_PutString(msg);            
+            sprintf(msg, "Z_acc : %d\r\n", OutAcc);
+            UART_PutString(msg);            
             
             DataBuffer[5] = (uint8_t) (OutAcc & 0xFF);
             DataBuffer[6] = (uint8_t) (OutAcc>>8);
             
-            UART_PutArray(DataBuffer,TRANSMIT_BUFFER_SIZE);
+//            UART_PutArray(DataBuffer,TRANSMIT_BUFFER_SIZE);
             
         } // end data transmission
                     

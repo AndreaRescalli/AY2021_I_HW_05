@@ -10,12 +10,10 @@
  * ========================================
 */
 
+
 // Includes
 #include "InterruptRoutines.h"
 
-// Defines
-
-// Globals
 
 // Definition of ISR that informs whether the button has been pressed
 // in order to update the sampling frequency for the accelerometer

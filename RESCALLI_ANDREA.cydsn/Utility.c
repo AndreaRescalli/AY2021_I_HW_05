@@ -10,11 +10,15 @@
  * ========================================
 */
 
+
+// Includes
 #include "Utility.h"
 #include "I2C.h"
 #include "project.h"
 #include <stdio.h>
 
+
+// Useful variables
 char message[50] = {'\0'};
 
 
@@ -34,20 +38,21 @@ void SetOperatingFrequency(uint8_t register_value,
     
     if (register_value != desired_value) {
         
-//        UART_PutString("\r\nUpdating Sampling Frequency\r\n");
+        //UART_PutString("\r\nUpdating Sampling Frequency\r\n");
+        
         // Set the frequency by writing on the register the correct value
         // This also ensures LPen bit is 0 (it's embedded in the desired_value)
         register_value = desired_value;
         I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
                                      LIS3DH_CTRL_REG1,
                                      register_value);
-//        sprintf(message, "Desired value for CONTROL REGISTER 1: 0x%02X\r\n", register_value);
-//        UART_PutString(message);
+        //sprintf(message, "Desired value for CONTROL REGISTER 1: 0x%02X\r\n", register_value);
+        //UART_PutString(message);
         
-        // Check that the register has been overwritten correctly
-        I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
-                                    LIS3DH_CTRL_REG1,
-                                    &register_value);
+//        // Check that the register has been overwritten correctly
+//        I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+//                                    LIS3DH_CTRL_REG1,
+//                                    &register_value);
 //        sprintf(message, "CONTROL REGISTER 1 after overwrite: 0x%02X\r\n", register_value);
 //        UART_PutString(message);    
             
@@ -65,9 +70,9 @@ void PrintFloat(float value) {
     char *tmpSign = (value < 0) ? "-" : "";
     float tmpVal = (value < 0) ? -value : value;
 
-    int tmpInt1 = tmpVal;                 // Get the integer
+    int16_t tmpInt1 = tmpVal;             // Get the integer
     float tmpFrac = tmpVal - tmpInt1;     // Get decimals
-    int tmpInt2 = tmpFrac * 1000;         // Turn decimals into integer
+    int16_t tmpInt2 = tmpFrac * 1000;     // Turn decimals into integer
 
     // Print as parts, note that you need 0-padding for fractional bit.
     sprintf (str, "Acceleration = %s%d.%03d\n", tmpSign, tmpInt1, tmpInt2);

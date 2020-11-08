@@ -32,31 +32,29 @@ void SetOperatingFrequency(uint8_t register_value,
                            uint8_t desired_value) {
     
     // Read the register: we will update only if there is a different value in it
-    I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
-                                LIS3DH_CTRL_REG1,
-                                &register_value);
-    
-    if (register_value != desired_value) {
+    uint8_t error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+                                                LIS3DH_CTRL_REG1,
+                                                &register_value);
+    if(error == NO_ERROR) {
         
-        //UART_PutString("\r\nUpdating Sampling Frequency\r\n");
+        if (register_value != desired_value) {
+            // Set the frequency by writing on the register the correct value
+            // This also ensures LPen bit is 0 (it's embedded in the desired_value)
+            register_value = desired_value;
+            error = I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
+                                                 LIS3DH_CTRL_REG1,
+                                                 register_value);
+            if(error == ERROR) {
+                UART_PutString("Error occurred during I2C communication.\r\n");
+                UART_PutString("Power down, power up and reset the device.\r\n");    
+            }
+        } // end write
         
-        // Set the frequency by writing on the register the correct value
-        // This also ensures LPen bit is 0 (it's embedded in the desired_value)
-        register_value = desired_value;
-        I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
-                                     LIS3DH_CTRL_REG1,
-                                     register_value);
-        //sprintf(message, "Desired value for CONTROL REGISTER 1: 0x%02X\r\n", register_value);
-        //UART_PutString(message);
-        
-//        // Check that the register has been overwritten correctly
-//        I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
-//                                    LIS3DH_CTRL_REG1,
-//                                    &register_value);
-//        sprintf(message, "CONTROL REGISTER 1 after overwrite: 0x%02X\r\n", register_value);
-//        UART_PutString(message);    
-            
-    } // end write
+    } // end if(read is ok)
+    else {
+        UART_PutString("Error occurred during I2C communication.\r\n");
+        UART_PutString("Power down, power up and reset the device.\r\n");   
+    }
     
 } // end SetOperatingFrequency
                         

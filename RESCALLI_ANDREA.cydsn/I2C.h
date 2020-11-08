@@ -21,6 +21,9 @@
     #define DEVICE_CONNECTED    1
     #define DEVICE_UNCONNECTED  0
     
+    #define ERROR    1
+    #define NO_ERROR 0
+    
     
     /*
      * Declaration of function that searches for connected devices on the I2C bus.
@@ -39,9 +42,9 @@
      * - pointer where to save the read data
      *
     */
-    void I2C_Peripheral_ReadRegister(uint8_t device_address, 
-                                     uint8_t register_address,
-                                     uint8_t* data);
+    uint8_t I2C_Peripheral_ReadRegister(uint8_t device_address, 
+                                        uint8_t register_address,
+                                        uint8_t* data);
     
     
     /*
@@ -53,10 +56,10 @@
      * - pointer where to save the read data
      *
     */
-    void I2C_Peripheral_ReadRegisterMulti(uint8_t device_address,
-                                          uint8_t register_address,
-                                          uint8_t register_count,
-                                          uint8_t* data);
+    uint8_t I2C_Peripheral_ReadRegisterMulti(uint8_t device_address,
+                                             uint8_t register_address,
+                                             uint8_t register_count,
+                                             uint8_t* data);
     
 
     /*
@@ -67,9 +70,9 @@
      * - data to be written
      *
     */
-    void I2C_Peripheral_WriteRegister(uint8_t device_address,
-                                      uint8_t register_address,
-                                      uint8_t data);
+    uint8_t I2C_Peripheral_WriteRegister(uint8_t device_address,
+                                         uint8_t register_address,
+                                         uint8_t data);
      
 #endif
 

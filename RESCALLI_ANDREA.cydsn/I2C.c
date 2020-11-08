@@ -42,9 +42,9 @@ uint8_t I2C_Peripheral_IsDeviceConnected(uint8_t device_address) {
  * - adress of the register we want to read
  * - pointer where to save the read data
 */
-void I2C_Peripheral_ReadRegister(uint8_t device_address, 
-                                 uint8_t register_address,
-                                 uint8_t* data) {
+uint8_t I2C_Peripheral_ReadRegister(uint8_t device_address, 
+                                    uint8_t register_address,
+                                    uint8_t* data) {
                                     
     // Start condition
     
@@ -69,6 +69,8 @@ void I2C_Peripheral_ReadRegister(uint8_t device_address,
     
     // Send stop condition
     I2C_Master_MasterSendStop();
+    
+    return temp ? ERROR : NO_ERROR;
 
 } // end I2C_Peripheral_ReadRegister
                                 
@@ -81,10 +83,10 @@ void I2C_Peripheral_ReadRegister(uint8_t device_address,
  * - # registers we want to read
  * - pointer where to save the read data
 */                               
-void I2C_Peripheral_ReadRegisterMulti(uint8_t device_address,
-                                      uint8_t register_address,
-                                      uint8_t register_count,
-                                      uint8_t* data) {
+uint8_t I2C_Peripheral_ReadRegisterMulti(uint8_t device_address,
+                                         uint8_t register_address,
+                                         uint8_t register_count,
+                                         uint8_t* data) {
                                         
     // Start condition
                                         
@@ -121,6 +123,8 @@ void I2C_Peripheral_ReadRegisterMulti(uint8_t device_address,
     
     // Send stop condition
     I2C_Master_MasterSendStop();
+    
+    return temp ? ERROR : NO_ERROR;
 
 } // end I2C_Peripheral_ReadRegisterMulti
 
@@ -132,9 +136,9 @@ void I2C_Peripheral_ReadRegisterMulti(uint8_t device_address,
  * - adress of the register we want to read
  * - data to be written
 */
-void I2C_Peripheral_WriteRegister(uint8_t device_address,
-                                  uint8_t register_address,
-                                  uint8_t data) {
+uint8_t I2C_Peripheral_WriteRegister(uint8_t device_address,
+                                     uint8_t register_address,
+                                     uint8_t data) {
                                     
     // Start condition
                                     
@@ -153,6 +157,8 @@ void I2C_Peripheral_WriteRegister(uint8_t device_address,
     
     // Send stop condition
     I2C_Master_MasterSendStop();
+    
+    return temp ? ERROR : NO_ERROR;
 
 } // end I2C_Peripheral_WriteRegister
                                 

@@ -46,14 +46,12 @@ void SetOperatingFrequency(uint8_t register_value,
                                                  register_value);
             if(error == ERROR) {
                 UART_PutString("Error occurred during I2C communication.\r\n");
-                UART_PutString("Power down, power up and reset the device.\r\n");    
             }
         } // end write
         
     } // end if(read is ok)
     else {
         UART_PutString("Error occurred during I2C communication.\r\n");
-        UART_PutString("Power down, power up and reset the device.\r\n");   
     }
     
 } // end SetOperatingFrequency

@@ -53,23 +53,40 @@ int main(void) {
 
     CyGlobalIntEnable; /* Enable global interrupts. */
     
-    // Start components (EEPROM, UART, I2C)
+    // Start components (EEPROM, I2C, UART)
     EEPROM_Start();
-    UART_Start();
     I2C_Master_Start();
+    UART_Start();
     
     // The LIS3DH datasheet states that the boot procedure of the device is completed
     // 5ms after the power-up of the device
     CyDelay(5);
     
     
+    /* ---------------------------------- */
+    /*         CONNECTED DEVICES          */
+    /* ---------------------------------- */    
+    
     // Check which devices are present on the I2C bus (just as intial control)
-    for (int i = 0;i<128;i++) {
+    for (int i=0;i<128;i++) {
         // Scan the whole I2C bus --> search for LIS3DH
         if (I2C_Peripheral_IsDeviceConnected(i)) {
             // Display address of connected device in hex format
             sprintf(msg, "CONNECTED DEVICE: 0x%02X [Expected: 0x18]\r\n", i);
             UART_PutString(msg);
+            
+            /* !IMPORTANT!
+             * For this application, only the 0x18 adress should be occupied on the I2C
+             * bus. Any other connection will lead to an error in the communication
+            */
+            if(i != LIS3DH_DEVICE_ADDRESS) {
+                UART_PutString("ERROR OCCURRED\r\n");
+                UART_PutString("--------------------\r\n");
+                UART_PutString("Reset the device\r\n");
+                UART_PutString("If the problem persists: disconnect and reconnect LIS3DH to power line, then reset the PSoC.\r\n");
+                UART_PutString("--------------------\r\n\r\n");
+                return -1;
+            }
         }
     } // end scan check
     
@@ -79,7 +96,7 @@ int main(void) {
     /* ---------------------------------- */
     
     // Read WHO AM I register of connected device
-    uint8_t who_am_i_reg;
+    uint8_t who_am_i_reg = 0;
     err = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
                                       LIS3DH_WHO_AM_I_REG, 
                                       &who_am_i_reg);
@@ -89,11 +106,10 @@ int main(void) {
     }
     else {
         UART_PutString("Error occurred during I2C communication.\r\n");
-        UART_PutString("Power down, power up and reset the device.\r\n");
     }
     
     // Read Status register of connected device
-    uint8_t status_register;
+    uint8_t status_register = 0;
     err = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
                                       LIS3DH_STATUS_REG,
                                       &status_register);
@@ -103,11 +119,10 @@ int main(void) {
     }
     else {
         UART_PutString("Error occurred during I2C communication.\r\n");
-        UART_PutString("Power down, power up and reset the device.\r\n");
     }    
     
     // Read Control Register 1 of connected device
-    uint8_t ctrl_reg1;
+    uint8_t ctrl_reg1 = 0;
     err = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
                                       LIS3DH_CTRL_REG1,
                                       &ctrl_reg1);
@@ -117,21 +132,19 @@ int main(void) {
     }
     else {
         UART_PutString("Error occurred during I2C communication.\r\n");
-        UART_PutString("Power down, power up and reset the device.\r\n");
     }    
 
     // Read Control Register 4 of connected device
-    uint8_t ctrl_reg4;
+    uint8_t ctrl_reg4 = 0;
     err = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
-                                LIS3DH_CTRL_REG4,
-                                &ctrl_reg4);
+                                      LIS3DH_CTRL_REG4,
+                                      &ctrl_reg4);
     if(err == NO_ERROR) {
         sprintf(msg, "CONTROL REGISTER 4: 0x%02X\r\n", ctrl_reg4);
         UART_PutString(msg);
     }
     else {
         UART_PutString("Error occurred during I2C communication.\r\n");
-        UART_PutString("Power down, power up and reset the device.\r\n");
     }    
     
     
@@ -149,7 +162,8 @@ int main(void) {
      * something else previously, in that cell of the EEPROM we could have anything.. 
      * so check if it consistent with an allowed sampling frequency (and set the
      * counter accordingly) otherwise set it, by default, to the lowest (1 Hz). 
-     * At the same time, set the LIS3DH accordingly
+     * At the same time, set the LIS3DH accordingly.
+     * LPen bit is set to 0 to enable a proper HR setting in the control register 4.
     */
     switch(init_ctrl_reg1) {
     
@@ -210,7 +224,7 @@ int main(void) {
      * Then, we have to set the LIS3DH to High Resolution operating mode
      * This will be done only if the device is not in HR mode yet
      * To set properly the HR mode we need also the LPen bit in the CRTL_REG1 at 0..
-     * This will be done when we set the sampling frequency of the device
+     * This has been done when we set the sampling frequency of the device.
      * Sets also BDU
     */
     if (ctrl_reg4 != LIS3DH_HR_MODE_CTRL_REG4) {
@@ -228,7 +242,6 @@ int main(void) {
         }
         else {
             UART_PutString("Error occurred during I2C communication.\r\n");
-            UART_PutString("Power down, power up and reset the device.\r\n");
         }        
         
         // Check that the register has been overwritten correctly
@@ -241,13 +254,10 @@ int main(void) {
         }
         else {
             UART_PutString("Error occurred during I2C communication.\r\n");
-            UART_PutString("Power down, power up and reset the device.\r\n");
         }
             
     } // end HR setting
         
-    
-    CyDelay(5);
     
     // Init flags
     flag_push = 0;
@@ -352,11 +362,7 @@ int main(void) {
                     
                     // Conversion into m/s^2
                     conv = OutAcc/1000.0*9.81;
-                    //PrintFloat(conv);
-                    
-                    OutAcc = (int16_t) (conv*1000);
-                    //sprintf(msg, "X_acc : %d\r\n", OutAcc);
-                    //UART_PutString(msg);            
+                    OutAcc = (int16_t) (conv*1000);            
                     
                     DataBuffer[1] = (uint8_t) (OutAcc & 0xFF);
                     DataBuffer[2] = (uint8_t) (OutAcc>>8);
@@ -369,11 +375,7 @@ int main(void) {
                     
                     // Conversion into m/s^2
                     conv = OutAcc/1000.0*9.81;
-                    //PrintFloat(conv);
-
                     OutAcc = (int16_t) (conv*1000);
-                    //sprintf(msg, "Y_acc : %d\r\n", OutAcc);
-                    //UART_PutString(msg);
                     
                     DataBuffer[3] = (uint8_t) (OutAcc & 0xFF);
                     DataBuffer[4] = (uint8_t) (OutAcc>>8);
@@ -386,11 +388,7 @@ int main(void) {
                     
                     // Conversion into m/s^2
                     conv = OutAcc/1000.0*9.81;
-                    //PrintFloat(conv);
-                    
-                    OutAcc = (int16_t) (conv*1000);            
-                    //sprintf(msg, "Z_acc : %d\r\n", OutAcc);
-                    //UART_PutString(msg);            
+                    OutAcc = (int16_t) (conv*1000);                       
                     
                     DataBuffer[5] = (uint8_t) (OutAcc & 0xFF);
                     DataBuffer[6] = (uint8_t) (OutAcc>>8);

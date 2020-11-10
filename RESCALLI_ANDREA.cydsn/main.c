@@ -28,6 +28,9 @@
 #define AXES                 3
 #define BYTE_TO_SEND         2*AXES
 #define TRANSMIT_BUFFER_SIZE 1+BYTE_TO_SEND+1
+    // Macros for the convertion of data (justified in the code)
+#define DIGIT_TO_G 1000.0
+#define G_TO_MS2   9.81
     // Macros for the LIS3DH are found in the "Utility.h" header file
 
 
@@ -344,9 +347,9 @@ int main(void) {
                 
                 // Read all the data from X, Y and Z axes
                 err = I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS, 
-                                                 LIS3DH_OUT_X_L, 
-                                                 BYTE_TO_SEND, 
-                                                 AccelerationData);
+                                                       LIS3DH_OUT_X_L, 
+                                                       BYTE_TO_SEND, 
+                                                       AccelerationData);
                 if(err == NO_ERROR) {
                     
                     // Right shift of 4 bit is necessary since data are in 12-bit resolution
@@ -361,7 +364,7 @@ int main(void) {
                     OutAcc = (int16_t)((AccelerationData[0] | (AccelerationData[1]<<8)))>>4;
                     
                     // Conversion into m/s^2
-                    conv = OutAcc/1000.0*9.81;
+                    conv = OutAcc/DIGIT_TO_G*G_TO_MS2;
                     OutAcc = (int16_t) (conv*1000);            
                     
                     DataBuffer[1] = (uint8_t) (OutAcc & 0xFF);
@@ -374,7 +377,7 @@ int main(void) {
                     OutAcc = (int16_t)((AccelerationData[2] | (AccelerationData[3]<<8)))>>4;
                     
                     // Conversion into m/s^2
-                    conv = OutAcc/1000.0*9.81;
+                    conv = OutAcc/DIGIT_TO_G*G_TO_MS2;
                     OutAcc = (int16_t) (conv*1000);
                     
                     DataBuffer[3] = (uint8_t) (OutAcc & 0xFF);
@@ -387,7 +390,7 @@ int main(void) {
                     OutAcc = (int16_t)((AccelerationData[4] | (AccelerationData[5]<<8)))>>4;
                     
                     // Conversion into m/s^2
-                    conv = OutAcc/1000.0*9.81;
+                    conv = OutAcc/DIGIT_TO_G*G_TO_MS2;
                     OutAcc = (int16_t) (conv*1000);                       
                     
                     DataBuffer[5] = (uint8_t) (OutAcc & 0xFF);

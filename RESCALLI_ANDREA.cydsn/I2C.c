@@ -1,11 +1,23 @@
 /* ========================================
  *
- * Copyright YOUR COMPANY, THE YEAR
+ * Copyright LTEBS srl, 2020
  * All Rights Reserved
  * UNPUBLISHED, LICENSED SOFTWARE.
  *
  * CONFIDENTIAL AND PROPRIETARY INFORMATION
- * WHICH IS THE PROPERTY OF your company.
+ * WHICH IS THE PROPERTY OF LTEBS srl.
+ *
+ * \file  I2C.c
+ * \brief Source file including all the functions necessary for the I2C communication
+ *
+ * I2C communication from PSoC (master) to a slave accelerometer (LIS3DH). Operating frequency
+ * of the device can be changed (and stored into EEPROM, from where will be loaded into the
+ * LIS3DH's register at startup) by using the on-board button of the PSoC.
+ * Data collected on the 3 axes will be sent via UART to the Bridge Panel Control in m/s^2
+ * 
+ *
+ * \author: Andrea Rescalli
+ * \date:   14/11/2020
  *
  * ========================================
 */

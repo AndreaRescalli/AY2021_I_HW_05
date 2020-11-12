@@ -1,11 +1,24 @@
 /* ========================================
  *
- * Copyright YOUR COMPANY, THE YEAR
+ * Copyright LTEBS srl, 2020
  * All Rights Reserved
  * UNPUBLISHED, LICENSED SOFTWARE.
  *
  * CONFIDENTIAL AND PROPRIETARY INFORMATION
- * WHICH IS THE PROPERTY OF your company.
+ * WHICH IS THE PROPERTY OF LTEBS srl.
+ *
+ * \file  Utility.c
+ * \brief Source file including the definition of a function that allows the setting of
+ *          the CONTROL REGISTER 1 according to the desired value
+ *
+ * I2C communication from PSoC (master) to a slave accelerometer (LIS3DH). Operating frequency
+ * of the device can be changed (and stored into EEPROM, from where will be loaded into the
+ * LIS3DH's register at startup) by using the on-board button of the PSoC.
+ * Data collected on the 3 axes will be sent via UART to the Bridge Panel Control in m/s^2
+ * 
+ *
+ * \author: Andrea Rescalli
+ * \date:   14/11/2020
  *
  * ========================================
 */
@@ -55,25 +68,6 @@ void SetOperatingFrequency(uint8_t register_value,
     }
     
 } // end SetOperatingFrequency
-                        
-
-// Definition of helping function to print float varaibles via UART
-void PrintFloat(float value) {
-
-    // Message that will be displayed
-    char str[100];
-
-    char *tmpSign = (value < 0) ? "-" : "";
-    float tmpVal = (value < 0) ? -value : value;
-
-    int16_t tmpInt1 = tmpVal;             // Get the integer
-    float tmpFrac = tmpVal - tmpInt1;     // Get decimals
-    int16_t tmpInt2 = tmpFrac * 1000;     // Turn decimals into integer
-
-    // Print as parts, note that you need 0-padding for fractional bit.
-    sprintf (str, "Acceleration = %s%d.%03d\n", tmpSign, tmpInt1, tmpInt2);
-    UART_PutString(str);
-
-} // end PrintFloat                       
+                                              
 
 /* [] END OF FILE */

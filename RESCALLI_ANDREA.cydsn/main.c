@@ -1,11 +1,23 @@
 /* ========================================
  *
- * Copyright YOUR COMPANY, THE YEAR
+ * Copyright LTEBS srl, 2020
  * All Rights Reserved
  * UNPUBLISHED, LICENSED SOFTWARE.
  *
  * CONFIDENTIAL AND PROPRIETARY INFORMATION
- * WHICH IS THE PROPERTY OF your company.
+ * WHICH IS THE PROPERTY OF LTEBS srl.
+ *
+ * \file  main.c
+ * \brief Main source file for the Assignment_5
+ *
+ * I2C communication from PSoC (master) to a slave accelerometer (LIS3DH). Operating frequency
+ * of the device can be changed (and stored into EEPROM, from where will be loaded into the
+ * LIS3DH's register at startup) by using the on-board button of the PSoC.
+ * Data collected on the 3 axes will be sent via UART to the Bridge Panel Control in m/s^2
+ * 
+ *
+ * \author: Andrea Rescalli
+ * \date:   14/11/2020 
  *
  * ========================================
 */
@@ -21,7 +33,7 @@
 
 // Defines
     // EEPROM register where the frequency for the LIS3DH is stored
-#define STARTUP_REG     0x0000  
+#define STARTUP_REG          0x0000  
     // Macros for the packet of data to be sent via UART
 #define HEADER               0xA0
 #define TAIL                 0xC0
@@ -29,8 +41,8 @@
 #define BYTE_TO_SEND         2*AXES
 #define TRANSMIT_BUFFER_SIZE 1+BYTE_TO_SEND+1
     // Macros for the convertion of data (justified in the code)
-#define DIGIT_TO_G 1000.0
-#define G_TO_MS2   9.81
+#define DIGIT_TO_G           1000.0
+#define G_TO_MS2             9.81
     // Macros for the LIS3DH are found in the "Utility.h" header file
 
 

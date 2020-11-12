@@ -1,11 +1,25 @@
 /* ========================================
  *
- * Copyright YOUR COMPANY, THE YEAR
+ * Copyright LTEBS srl, 2020
  * All Rights Reserved
  * UNPUBLISHED, LICENSED SOFTWARE.
  *
  * CONFIDENTIAL AND PROPRIETARY INFORMATION
- * WHICH IS THE PROPERTY OF your company.
+ * WHICH IS THE PROPERTY OF LTEBS srl.
+ *
+ * \file  Utility.h
+ * \brief Header file including the declaration of a function that allows the setting of
+ *          the CONTROL REGISTER 1 according to the desired value. It also includes
+ *          all the macros needed to interface with the LIS3DH
+ *
+ * I2C communication from PSoC (master) to a slave accelerometer (LIS3DH). Operating frequency
+ * of the device can be changed (and stored into EEPROM, from where will be loaded into the
+ * LIS3DH's register at startup) by using the on-board button of the PSoC.
+ * Data collected on the 3 axes will be sent via UART to the Bridge Panel Control in m/s^2
+ * 
+ *
+ * \author: Andrea Rescalli
+ * \date:   14/11/2020
  *
  * ========================================
 */
@@ -49,9 +63,6 @@
     */
     void SetOperatingFrequency(uint8_t register_value, 
                                uint8_t desired_value);
-    
-    // Declaration of helping function to print float varaibles via UART
-    void PrintFloat(float value);
     
 #endif
 
